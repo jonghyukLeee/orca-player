@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: member
+  webflux:
+    base-path: /member
+
+server:
+  port: 8020
