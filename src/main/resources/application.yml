@@ -1,8 +1,16 @@
 spring:
   application:
-    name: member
+    name: player
   webflux:
-    base-path: /member
+    base-path: /player
+  data:
+    mongodb:
+      host: mongo-player
+      port: 27017
+      username: root
+      password: ${DB_PASSWORD}
+      database: admin
+      authentication-database: admin
 
 server:
   port: 8020

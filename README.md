@@ -1,2 +1,2 @@
-# member
-orca-member
+# player
+orca-player
