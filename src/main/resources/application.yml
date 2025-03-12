@@ -1,8 +1,8 @@
 spring:
   application:
-    name: member
+    name: player
   webflux:
-    base-path: /member
+    base-path: /player
 
 server:
   port: 8020
