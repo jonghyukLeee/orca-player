@@ -16,16 +16,30 @@ class PlayerController(
             body = GenerateResponse(
                 playerService.generate(
                     name = request.name,
-                    birth = request.birth
+                    birth = request.birth,
+                    loginId = request.loginId,
+                    password = request.password
                 )
             )
         )
     }
 
     @GetMapping
-    suspend fun findOne(@RequestParam id: String): ResponseEntity<PlayerResponse> {
+    suspend fun get(@RequestParam id: String): ResponseEntity<PlayerResponse> {
         return baseResponse(
-            body = PlayerResponse(playerService.getById(id))
+            body = PlayerResponse(playerService.get(id))
+        )
+    }
+
+    @GetMapping("/credentials")
+    suspend fun verify(@RequestParam loginId: String): ResponseEntity<VerifyResponse> {
+        val player = playerService.verify(loginId)
+        return baseResponse(
+            body = VerifyResponse(
+                id = player.id!!,
+                loginId = player.loginId,
+                encryptedPassword = player.password
+            )
         )
     }
 }
