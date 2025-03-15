@@ -9,7 +9,9 @@ data class Player(
     var id: String? = null,
     val name: String,
     var birth: String,
-    var histories: MutableList<ClubHistory> = mutableListOf()
+    var loginId: String,
+    var password: String,
+    var clubHistories: MutableList<ClubHistory> = mutableListOf()
 )
 
 data class ClubHistory(

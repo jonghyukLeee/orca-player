@@ -6,4 +6,5 @@ import reactor.core.publisher.Mono
 
 interface PlayerRepository: ReactiveMongoRepository<Player, String> {
     fun findByNameAndBirth(name: String, birth: String): Mono<Player>
+    fun findByLoginId(loginId: String): Mono<Player>
 }
