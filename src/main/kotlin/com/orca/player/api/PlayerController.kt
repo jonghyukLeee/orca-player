@@ -1,5 +1,6 @@
 package com.orca.player.api
 
+import com.orca.player.external.club.JoinApplicationResponse
 import com.orca.player.service.PlayerService
 import com.orca.player.utils.baseResponse
 import org.springframework.http.ResponseEntity
@@ -25,9 +26,9 @@ class PlayerController(
     }
 
     @GetMapping
-    suspend fun get(@RequestParam id: String): ResponseEntity<PlayerResponse> {
+    suspend fun getPlayer(@RequestParam id: String): ResponseEntity<PlayerResponse> {
         return baseResponse(
-            body = PlayerResponse(playerService.get(id))
+            body = PlayerResponse(playerService.getPlayer(id))
         )
     }
 
@@ -40,6 +41,16 @@ class PlayerController(
                 loginId = player.loginId,
                 encryptedPassword = player.password
             )
+        )
+    }
+
+    @GetMapping("/{playerId}/join-application")
+    suspend fun getJoinApplications(
+        @PathVariable playerId: String,
+        @RequestParam status: JoinApplicationStatus
+    ): ResponseEntity<List<JoinApplicationResponse>> {
+        return baseResponse(
+            body = playerService.getJoinApplications(playerId, status)
         )
     }
 }

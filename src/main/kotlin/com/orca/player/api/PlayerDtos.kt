@@ -42,3 +42,9 @@ data class VerifyResponse(
     val loginId: String,
     val encryptedPassword: String
 )
+
+enum class JoinApplicationStatus {
+    PENDING,
+    ACCEPTED,
+    REJECTED
+}
