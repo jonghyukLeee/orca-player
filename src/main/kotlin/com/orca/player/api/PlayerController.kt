@@ -25,10 +25,24 @@ class PlayerController(
         )
     }
 
-    @GetMapping
-    suspend fun getPlayer(@RequestParam id: String): ResponseEntity<PlayerResponse> {
+    @GetMapping("/{playerId}")
+    suspend fun getPlayer(@PathVariable playerId: String): ResponseEntity<PlayerResponse> {
         return baseResponse(
-            body = PlayerResponse(playerService.getPlayer(id))
+            body = PlayerResponse(playerService.getPlayer(playerId))
+        )
+    }
+
+    @PatchMapping("/{playerId}")
+    suspend fun update(
+        @PathVariable playerId: String,
+        @RequestBody request: UpdateRequest
+    ): ResponseEntity<PlayerResponse> {
+        return baseResponse(
+            body = PlayerResponse(
+                playerService.update(
+                    playerId, request.name
+                )
+            )
         )
     }
 
