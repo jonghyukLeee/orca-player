@@ -6,7 +6,7 @@ import com.orca.player.exception.BaseException
 import com.orca.player.exception.ErrorCode
 import com.orca.player.external.club.ClubService
 import com.orca.player.external.club.JoinApplicationResponse
-import com.orca.player.external.kafka.PlayerEventPublisher
+import com.orca.player.external.kafka.EventPublisher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ class PlayerService(
     private val playerManager: PlayerManager,
     private val playerReader: PlayerReader,
     private val clubService: ClubService,
-    private val playerEventPublisher: PlayerEventPublisher
+    private val eventPublisher: EventPublisher
 ) {
     suspend fun generate(name: String, birth: String, loginId: String, password: String): Player {
         if (playerReader.byLoginId(loginId) != null) throw BaseException(ErrorCode.DUPLICATE_PLAYER)
@@ -27,7 +27,7 @@ class PlayerService(
     suspend fun update(playerId: String, name: String): Player {
         return coroutineScope {
             val updatedPlayer = async { playerManager.update(playerId, name) }.await()
-            launch { playerEventPublisher.playerUpdate(updatedPlayer) }
+            launch { eventPublisher.playerUpdate(updatedPlayer) }
             updatedPlayer
         }
     }
@@ -42,13 +42,5 @@ class PlayerService(
 
     suspend fun getJoinApplications(playerId: String, status: JoinApplicationStatus): List<JoinApplicationResponse> {
         return clubService.getPlayerApplications(playerId, status)
-    }
-
-    suspend fun addClub(playerId: String, clubId: String) {
-        playerManager.addClub(playerId, clubId)
-    }
-
-    suspend fun deleteClub(playerId: String, clubId: String) {
-        playerManager.deleteClub(playerId, clubId)
     }
 }

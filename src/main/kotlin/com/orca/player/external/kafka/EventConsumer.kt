@@ -1,16 +1,16 @@
 package com.orca.player.external.kafka
 
-import com.orca.player.service.PlayerService
+import com.orca.player.service.PlayerManager
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Service
 
 @Service
-class PlayerEventConsumer(
-    private val playerService: PlayerService
+class EventConsumer(
+    private val playerManager: PlayerManager
 ) {
     @KafkaListener(topics = ["join-accept"])
     suspend fun joinAccept(message: JoinAcceptMessage) {
-        playerService.addClub(
+        playerManager.addClub(
             playerId = message.playerId,
             clubId = message.clubId
         )
@@ -18,7 +18,7 @@ class PlayerEventConsumer(
 
     @KafkaListener(topics = ["join-accept-failed"])
     suspend fun joinAcceptFailed(message: JoinAcceptMessage) {
-        playerService.deleteClub(
+        playerManager.deleteClub(
             playerId = message.playerId,
             clubId = message.clubId
         )

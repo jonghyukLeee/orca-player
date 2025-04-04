@@ -6,7 +6,7 @@ import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.stereotype.Service
 
 @Service
-class PlayerEventPublisher(
+class EventPublisher(
     private val reactiveKafkaProducerTemplate: ReactiveKafkaProducerTemplate<String, Any>
 ) {
     suspend fun playerUpdate(updatedPlayer: Player) {
