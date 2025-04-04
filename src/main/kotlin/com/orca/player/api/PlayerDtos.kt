@@ -48,3 +48,7 @@ enum class JoinApplicationStatus {
     ACCEPTED,
     REJECTED
 }
+
+data class UpdateRequest(
+    val name: String
+)

@@ -6,21 +6,34 @@ import com.orca.player.exception.BaseException
 import com.orca.player.exception.ErrorCode
 import com.orca.player.external.club.ClubService
 import com.orca.player.external.club.JoinApplicationResponse
+import com.orca.player.external.kafka.PlayerEventPublisher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.springframework.stereotype.Service
 
 @Service
 class PlayerService(
     private val playerManager: PlayerManager,
     private val playerReader: PlayerReader,
-    private val clubService: ClubService
+    private val clubService: ClubService,
+    private val playerEventPublisher: PlayerEventPublisher
 ) {
     suspend fun generate(name: String, birth: String, loginId: String, password: String): Player {
         if (playerReader.byLoginId(loginId) != null) throw BaseException(ErrorCode.DUPLICATE_PLAYER)
         return playerManager.create(name, birth, loginId, password)
     }
 
-    suspend fun getPlayer(id: String): Player {
-        return playerReader.byId(id) ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
+    suspend fun update(playerId: String, name: String): Player {
+        return coroutineScope {
+            val updatedPlayer = async { playerManager.update(playerId, name) }.await()
+            launch { playerEventPublisher.playerUpdate(updatedPlayer) }
+            updatedPlayer
+        }
+    }
+
+    suspend fun getPlayer(playerId: String): Player {
+        return playerReader.byId(playerId) ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
     }
 
     suspend fun verify(loginId: String): Player {
@@ -29,5 +42,13 @@ class PlayerService(
 
     suspend fun getJoinApplications(playerId: String, status: JoinApplicationStatus): List<JoinApplicationResponse> {
         return clubService.getPlayerApplications(playerId, status)
+    }
+
+    suspend fun addClub(playerId: String, clubId: String) {
+        playerManager.addClub(playerId, clubId)
+    }
+
+    suspend fun deleteClub(playerId: String, clubId: String) {
+        playerManager.deleteClub(playerId, clubId)
     }
 }

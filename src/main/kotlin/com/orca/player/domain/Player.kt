@@ -12,19 +12,19 @@ data class Player(
     var loginId: String,
     var password: String,
     var clubHistories: MutableList<ClubHistory> = mutableListOf()
-)
+) {
+    data class ClubHistory(
+        val id: String,
+        var matchCount: Int = 0,
+        var goal: Int = 0,
+        var assist: Int = 0,
+        var momCount: Int = 0,
+        var status: ClubStatus = ClubStatus.ACTIVE,
+    )
 
-data class ClubHistory(
-    var id: String,
-    var matchCount: Int? = 0,
-    var goal: Int? = 0,
-    var assist: Int? = 0,
-    var momCount: Int? = 0,
-    var status: ClubStatus,
-)
-
-enum class ClubStatus {
-    ACTIVE,
-    INACTIVE,
-    WITHDRAWN
+    enum class ClubStatus {
+        ACTIVE,
+        INACTIVE,
+        WITHDRAWN
+    }
 }
