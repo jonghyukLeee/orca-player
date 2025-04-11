@@ -19,10 +19,10 @@ data class Player(
         var goal: Int = 0,
         var assist: Int = 0,
         var momCount: Int = 0,
-        var status: ClubStatus = ClubStatus.ACTIVE,
+        var status: ActiveStatus = ActiveStatus.ACTIVE,
     )
 
-    enum class ClubStatus {
+    enum class ActiveStatus {
         ACTIVE,
         INACTIVE,
         WITHDRAWN
