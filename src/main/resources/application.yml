@@ -2,7 +2,7 @@ spring:
   application:
     name: player
   webflux:
-    base-path: /player
+    base-path: /players
   data:
     mongodb:
       host: mongo-player

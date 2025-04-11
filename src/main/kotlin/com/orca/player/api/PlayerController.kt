@@ -1,5 +1,6 @@
 package com.orca.player.api
 
+import com.orca.player.domain.toResponse
 import com.orca.player.external.club.JoinApplicationResponse
 import com.orca.player.service.PlayerService
 import com.orca.player.utils.baseResponse
@@ -28,7 +29,7 @@ class PlayerController(
     @GetMapping("/{playerId}")
     suspend fun getPlayer(@PathVariable playerId: String): ResponseEntity<PlayerResponse> {
         return baseResponse(
-            body = PlayerResponse(playerService.getPlayer(playerId))
+            body = playerService.getPlayer(playerId).toResponse()
         )
     }
 
@@ -38,11 +39,7 @@ class PlayerController(
         @RequestBody request: UpdateRequest
     ): ResponseEntity<PlayerResponse> {
         return baseResponse(
-            body = PlayerResponse(
-                playerService.update(
-                    playerId, request.name
-                )
-            )
+            body = playerService.update(playerId, request.name).toResponse()
         )
     }
 

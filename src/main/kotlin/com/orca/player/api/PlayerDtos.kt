@@ -27,15 +27,17 @@ data class PlayerResponse(
     val id: String,
     val name: String,
     val birth: String,
-    val clubHistories: List<String>,
-) {
-    constructor(player: Player) : this(
-        id = player.id!!,
-        name = player.name,
-        birth = player.birth,
-        clubHistories = player.clubHistories.map { it.id }
-    )
-}
+    val clubHistories: List<ClubHistoryResponse>,
+)
+
+data class ClubHistoryResponse(
+    val id: String,
+    val matchCount: Int,
+    val goal: Int,
+    val assist: Int,
+    val momCount: Int,
+    val status: String,
+)
 
 data class VerifyResponse(
     val id: String,
