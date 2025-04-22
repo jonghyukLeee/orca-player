@@ -8,6 +8,7 @@ fun Player.toResponse(): PlayerResponse {
         id = this.id!!,
         name = this.name,
         birth = this.birth,
+        loginId = this.loginId,
         clubHistories = this.clubHistories.map { it.toResponse() }
     )
 }
