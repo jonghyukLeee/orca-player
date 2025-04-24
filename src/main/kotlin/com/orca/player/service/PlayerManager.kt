@@ -4,8 +4,10 @@ import com.orca.player.domain.Player
 import com.orca.player.exception.BaseException
 import com.orca.player.exception.ErrorCode
 import com.orca.player.repository.PlayerRepository
+import com.orca.player.utils.buildQueryById
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.FindAndModifyOptions
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
@@ -26,7 +28,7 @@ class PlayerManager(
         ).awaitSingle()
     }
 
-    suspend fun update(playerId: String, name: String): Player {
+    suspend fun update(playerId: ObjectId, name: String): Player {
         val update = Update().apply {
             set("name", name)
         }
@@ -39,12 +41,12 @@ class PlayerManager(
         ).awaitSingleOrNull() ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
     }
 
-    suspend fun addClub(playerId: String, clubId: String) {
+    suspend fun addClub(playerId: ObjectId, clubId: ObjectId) {
         val update = Update().apply {
             addToSet(
                 "clubHistories",
                 Player.ClubHistory(
-                    id = clubId
+                    clubId = clubId
                 )
             )
         }
@@ -54,7 +56,7 @@ class PlayerManager(
         ).awaitSingle()
     }
 
-    suspend fun deleteClub(playerId: String, clubId: String) {
+    suspend fun deleteClub(playerId: ObjectId, clubId: ObjectId) {
         val update = Update().apply {
             pull("clubHistories", buildQueryById(clubId))
         }
@@ -66,7 +68,5 @@ class PlayerManager(
         )
     }
 
-    suspend fun buildQueryById(id: String): Query {
-        return Query(Criteria.where("_id").`is`(id))
-    }
+
 }

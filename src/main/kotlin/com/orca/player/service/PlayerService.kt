@@ -10,6 +10,7 @@ import com.orca.player.external.kafka.EventPublisher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
 @Service
@@ -24,7 +25,7 @@ class PlayerService(
         return playerManager.create(name, birth, loginId, password)
     }
 
-    suspend fun update(playerId: String, name: String): Player {
+    suspend fun update(playerId: ObjectId, name: String): Player {
         return coroutineScope {
             val updatedPlayer = async { playerManager.update(playerId, name) }.await()
             launch { eventPublisher.playerUpdate(updatedPlayer) }
@@ -32,7 +33,7 @@ class PlayerService(
         }
     }
 
-    suspend fun getPlayer(playerId: String): Player {
+    suspend fun getPlayer(playerId: ObjectId): Player {
         return playerReader.byId(playerId) ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
     }
 
@@ -40,7 +41,7 @@ class PlayerService(
         return playerReader.byLoginId(loginId) ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
     }
 
-    suspend fun getJoinApplications(playerId: String, status: JoinApplicationStatus): List<JoinApplicationResponse> {
+    suspend fun getJoinApplications(playerId: ObjectId, status: JoinApplicationStatus): List<JoinApplicationResponse> {
         return clubService.getPlayerApplications(playerId, status)
     }
 }

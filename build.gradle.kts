@@ -24,6 +24,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
 
 	implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0")
 
