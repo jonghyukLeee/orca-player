@@ -3,13 +3,14 @@ package com.orca.player.service
 import com.orca.player.domain.Player
 import com.orca.player.repository.PlayerRepository
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.bson.types.ObjectId
 import org.springframework.stereotype.Component
 
 @Component
 class PlayerReader(
     private val repository: PlayerRepository
 ) {
-    suspend fun byId(id: String): Player? {
+    suspend fun byId(id: ObjectId): Player? {
         return repository.findById(id).awaitSingleOrNull()
     }
 

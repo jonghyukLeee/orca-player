@@ -5,9 +5,12 @@ import com.orca.player.external.club.JoinApplicationResponse
 import com.orca.player.service.PlayerService
 import com.orca.player.utils.baseResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
+import org.bson.types.ObjectId
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@Tag(name = "Player", description = "Player APIs")
 @RequestMapping
 @RestController
 class PlayerController(
@@ -37,7 +40,7 @@ class PlayerController(
     @GetMapping("/{playerId}")
     suspend fun getPlayer(@PathVariable playerId: String): ResponseEntity<PlayerResponse> {
         return baseResponse(
-            body = playerService.getPlayer(playerId).toResponse()
+            body = playerService.getPlayer(ObjectId(playerId)).toResponse()
         )
     }
 
@@ -51,7 +54,7 @@ class PlayerController(
         @RequestBody request: UpdateRequest
     ): ResponseEntity<PlayerResponse> {
         return baseResponse(
-            body = playerService.update(playerId, request.name).toResponse()
+            body = playerService.update(ObjectId(playerId), request.name).toResponse()
         )
     }
 
@@ -64,7 +67,7 @@ class PlayerController(
         val player = playerService.verify(loginId)
         return baseResponse(
             body = VerifyResponse(
-                id = player.id!!,
+                id = player.id.toString(),
                 loginId = player.loginId,
                 encryptedPassword = player.password
             )
@@ -81,7 +84,7 @@ class PlayerController(
         @RequestParam status: JoinApplicationStatus
     ): ResponseEntity<List<JoinApplicationResponse>> {
         return baseResponse(
-            body = playerService.getJoinApplications(playerId, status)
+            body = playerService.getJoinApplications(ObjectId(playerId), status)
         )
     }
 }

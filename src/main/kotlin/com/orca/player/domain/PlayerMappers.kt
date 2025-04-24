@@ -5,7 +5,7 @@ import com.orca.player.api.PlayerResponse
 
 fun Player.toResponse(): PlayerResponse {
     return PlayerResponse(
-        id = this.id!!,
+        id = this.id.toString(),
         name = this.name,
         birth = this.birth,
         loginId = this.loginId,
@@ -15,7 +15,7 @@ fun Player.toResponse(): PlayerResponse {
 
 fun Player.ClubHistory.toResponse(): ClubHistoryResponse {
     return ClubHistoryResponse(
-        id = this.id,
+        id = this.clubId.toString(),
         matchCount = this.matchCount,
         goal = this.goal,
         assist = this.assist,

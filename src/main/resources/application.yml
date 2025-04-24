@@ -36,12 +36,12 @@ server:
 
 external:
   services:
-    auth:
+    auths:
       host: orca-auth
       port: 8010
-    club:
+    clubs:
       host: orca-club
       port: 8030
-    match:
+    matches:
       host: orca-match
       port: 8040

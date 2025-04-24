@@ -1,12 +1,13 @@
 package com.orca.player.domain
 
+import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "players")
 data class Player(
     @Id
-    var id: String? = null,
+    var id: ObjectId? = null,
     val name: String,
     var birth: String,
     var loginId: String,
@@ -14,7 +15,7 @@ data class Player(
     var clubHistories: MutableList<ClubHistory> = mutableListOf()
 ) {
     data class ClubHistory(
-        val id: String,
+        val clubId: ObjectId,
         var matchCount: Int = 0,
         var goal: Int = 0,
         var assist: Int = 0,
