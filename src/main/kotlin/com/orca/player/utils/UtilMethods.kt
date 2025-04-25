@@ -1,5 +1,8 @@
 package com.orca.player.utils
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
@@ -19,4 +22,14 @@ fun <T> baseResponse(status: HttpStatus? = HttpStatus.OK, body: T): ResponseEnti
 
 fun buildQueryById(id: ObjectId): Query {
     return Query(Criteria.where("_id").`is`(id))
+}
+
+fun Any.toJsonString(): String {
+    return ObjectMapper().writeValueAsString(this)
+}
+
+fun String.getJsonValue(key: String): String? {
+    val mapper = jacksonObjectMapper()
+    val node: JsonNode = mapper.readTree(this)
+    return node[key]?.asText()
 }
