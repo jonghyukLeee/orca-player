@@ -1,7 +1,7 @@
 package com.orca.player.external.kafka
 
 import com.orca.player.domain.Player
-import kotlinx.coroutines.reactor.awaitSingle
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate
 import org.springframework.stereotype.Service
 
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service
 class EventPublisher(
     private val reactiveKafkaProducerTemplate: ReactiveKafkaProducerTemplate<String, Any>
 ) {
-    suspend fun playerUpdate(updatedPlayer: Player) {
+    suspend fun playerUpdated(updatedPlayer: Player) {
         send(EventTopics.PLAYER_UPDATED,
-            PlayerUpdateMessage(
+            PlayerMessage(
                 id = updatedPlayer.id.toString(),
                 name = updatedPlayer.name,
                 birth = updatedPlayer.birth,
@@ -20,7 +20,18 @@ class EventPublisher(
         )
     }
 
+    suspend fun playerUpdateFailed(originPlayer: Player) {
+        send(EventTopics.PLAYER_UPDATE_FAILED,
+            PlayerMessage(
+                id = originPlayer.id.toString(),
+                name = originPlayer.name,
+                birth = originPlayer.birth,
+                loginId = originPlayer.loginId,
+            )
+        )
+    }
+
     suspend fun send(topic: String, message: Any) {
-        reactiveKafkaProducerTemplate.send(topic, message).awaitSingle()
+        reactiveKafkaProducerTemplate.send(topic, message).awaitSingleOrNull()
     }
 }

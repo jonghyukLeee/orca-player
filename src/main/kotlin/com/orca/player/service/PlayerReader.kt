@@ -10,15 +10,11 @@ import org.springframework.stereotype.Component
 class PlayerReader(
     private val repository: PlayerRepository
 ) {
-    suspend fun byId(id: ObjectId): Player? {
+    suspend fun findById(id: ObjectId): Player? {
         return repository.findById(id).awaitSingleOrNull()
     }
 
-    suspend fun byLoginId(loginId: String): Player? {
+    suspend fun findByLoginId(loginId: String): Player? {
         return repository.findByLoginId(loginId).awaitSingleOrNull()
-    }
-
-    suspend fun byDetails(name: String, birth: String): Player? {
-        return repository.findByNameAndBirth(name, birth).awaitSingleOrNull()
     }
 }

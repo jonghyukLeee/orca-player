@@ -21,24 +21,31 @@ class PlayerService(
     private val eventPublisher: EventPublisher
 ) {
     suspend fun generate(name: String, birth: String, loginId: String, password: String): Player {
-        if (playerReader.byLoginId(loginId) != null) throw BaseException(ErrorCode.DUPLICATE_PLAYER)
+        if (playerReader.findByLoginId(loginId) != null) throw BaseException(ErrorCode.DUPLICATE_PLAYER)
         return playerManager.create(name, birth, loginId, password)
     }
 
     suspend fun update(playerId: ObjectId, name: String): Player {
         return coroutineScope {
-            val updatedPlayer = async { playerManager.update(playerId, name) }.await()
-            launch { eventPublisher.playerUpdate(updatedPlayer) }
-            updatedPlayer
+            val originPlayer = getPlayer(playerId)
+            try {
+                val updatedPlayer = async { playerManager.update(playerId, name) }.await()
+                launch { eventPublisher.playerUpdated(updatedPlayer) }
+                updatedPlayer
+            } catch (e: Exception) {
+                playerManager.update(playerId, originPlayer.name)
+                eventPublisher.playerUpdateFailed(originPlayer)
+                throw BaseException(ErrorCode.PLAYER_UPDATE_FAILED)
+            }
         }
     }
 
     suspend fun getPlayer(playerId: ObjectId): Player {
-        return playerReader.byId(playerId) ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
+        return playerReader.findById(playerId) ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
     }
 
     suspend fun verify(loginId: String): Player {
-        return playerReader.byLoginId(loginId) ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
+        return playerReader.findByLoginId(loginId) ?: throw BaseException(ErrorCode.PLAYER_NOT_FOUND)
     }
 
     suspend fun getJoinApplications(playerId: ObjectId, status: JoinApplicationStatus): List<JoinApplicationResponse> {

@@ -6,7 +6,7 @@ data class JoinAcceptMessage(
     val playerId: String
 )
 
-data class PlayerUpdateMessage(
+data class PlayerMessage(
     val id: String,
     val name: String,
     val birth: String,
