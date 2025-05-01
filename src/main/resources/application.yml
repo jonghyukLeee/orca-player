@@ -2,7 +2,7 @@ spring:
   application:
     name: player
   webflux:
-    base-path: /player
+    base-path: /players
   data:
     mongodb:
       host: mongo-player
@@ -11,6 +11,36 @@ spring:
       password: ${DB_PASSWORD}
       database: admin
       authentication-database: admin
+    redis:
+      repositories:
+        enabled: false
+  kafka:
+    bootstrap-servers: orca-kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: player
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: manual_immediate
 
 server:
   port: 8020
+
+redis:
+  host: orca-redis
+
+external:
+  services:
+    auths:
+      host: orca-auth
+      port: 8010
+    clubs:
+      host: orca-club
+      port: 8030
+    matches:
+      host: orca-match
+      port: 8040
